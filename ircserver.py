@@ -6,18 +6,13 @@ import asyncio
 import json
 import logging
 import websockets
-from guizero import App, Text
 
 logging.basicConfig()
 
 messages = []
+newlist = [1,2,3]
 
 USERS = set()
-
-#app = App(title="IRC")
-#message = Text(app, text="Welcome to the IRC server screen!")
-#allmessages = Text(app,text="yo")
-#app.display()
 
 def state_event():
     return json.dumps({'type': 'state', **STATE})
@@ -43,15 +38,30 @@ async def unregister(websocket):
     USERS.remove(websocket)
     await notify_users()
 
+def getPacketData(packet):
+    pktunlen = 2
+    lun = int(packet[0:pktunlen-1])
+    #lmsg = int(packet[pktunlen-1:pktunlen+pktmsglen-1])
+    print (lun)
+    un = packet[pktunlen:pktunlen+lun-1]
+    msg = packet [pktunlen+lun:]
+    out = [un,msg]
+    return out
+
 async def counter(websocket, path):
     # register(websocket) sends user_event() to websocket
  #   await register(websocket)
     msg = await websocket.recv()
-    print(msg)
+    packet = getPacketData(msg)
+    print(msg,packet)
     messages.append(msg)
     #await websocket.send('\n'+msg)
  #   await unregister(websocket)
 
+def getMsgs():
+    return messages
+
+print ("Online")
 start_server = websockets.serve(counter, 'localhost', 6789)
 
 asyncio.get_event_loop().run_until_complete(start_server)

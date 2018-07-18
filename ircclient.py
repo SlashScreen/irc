@@ -9,12 +9,22 @@ def setup():
     un = input("What username? ")
     return un
 
+def setupPacket(un,msg):
+    lun = len(un)
+    lmsg = len(msg)
+    lunout = str("0"*(2-len(str(lun)))+str(len(str(lun))))
+    lmsgout = str("0"*(4-len(str(msg)))+str(len(msg)))
+    print (lunout,un,msg)
+    packet =  lunout+un+msg
+    return packet
+    #todo: size limitations
+
 async def hello(un):
     while True:
         async with websockets.connect('ws://localhost:6789') as websocket:
             msg = input("message: ")
             print ("You said {m}".format(m=msg))
-            packet = (un+" : "+msg)
+            packet = setupPacket(un,msg)
             await websocket.send(packet)
             #msgs = await websocket.recv()
             #print(msgs)
