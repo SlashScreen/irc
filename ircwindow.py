@@ -1,15 +1,7 @@
-from guizero import App, Text
-import ircserver
+from appJar import gui
 
-
-
-app = App(title="IRC")
-message = Text(app, text="Welcome to the IRC server screen!")
-allmessages = Text(app)
-app.display()
-
-##while True:
- #   messages = ircserver.getMsgs()
- #   allmessages.value = messages
- 
+def start():
+    app = gui()
+    text = app.addLabel("text")
+    app.go()
 

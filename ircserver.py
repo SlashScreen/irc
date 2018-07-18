@@ -6,6 +6,7 @@ import asyncio
 import json
 import logging
 import websockets
+import ircwindow
 
 logging.basicConfig()
 
@@ -40,12 +41,11 @@ async def unregister(websocket):
 
 def getPacketData(packet):
     pktunlen = 2
-    lun = int(packet[0:pktunlen-1])
-    #lmsg = int(packet[pktunlen-1:pktunlen+pktmsglen-1])
+    lun = int(packet[0:pktunlen])
     print (lun)
-    un = packet[pktunlen:pktunlen+lun-1]
+    un = packet[pktunlen:pktunlen+lun]
     msg = packet [pktunlen+lun:]
-    out = [un,msg]
+    out = {"username":un,"message":msg}
     return out
 
 async def counter(websocket, path):
@@ -53,7 +53,7 @@ async def counter(websocket, path):
  #   await register(websocket)
     msg = await websocket.recv()
     packet = getPacketData(msg)
-    print(msg,packet)
+    print("{u} said: {m}".format(u = packet["username"], m = packet["message"]))
     messages.append(msg)
     #await websocket.send('\n'+msg)
  #   await unregister(websocket)
@@ -61,8 +61,10 @@ async def counter(websocket, path):
 def getMsgs():
     return messages
 
-print ("Online")
-start_server = websockets.serve(counter, 'localhost', 6789)
+def comeOnline():
+    print ("Online")
+    start_server = websockets.serve(counter, 'localhost', 6789)
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
+

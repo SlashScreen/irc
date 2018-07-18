@@ -12,8 +12,8 @@ def setup():
 def setupPacket(un,msg):
     lun = len(un)
     lmsg = len(msg)
-    lunout = str("0"*(2-len(str(lun)))+str(len(str(lun))))
-    lmsgout = str("0"*(4-len(str(msg)))+str(len(msg)))
+    lunout = str(lun).zfill(2)
+ #   lmsgout = str("0"*(4-len(str(msg)))+str(len(msg)))
     print (lunout,un,msg)
     packet =  lunout+un+msg
     return packet
