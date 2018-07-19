@@ -62,11 +62,12 @@ def getMsgs():
     return messages
 
 def comeOnline():
-    print ("Online")
+    print ("Coming Online...")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     start_server = websockets.serve(counter, 'localhost', 6789)
     loop.run_until_complete(start_server)
+    print ("Online!")
     loop.run_forever()
 
 if __name__ == '__main__':

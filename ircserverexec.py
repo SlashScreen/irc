@@ -12,6 +12,9 @@ def execute(func):
 #ircserver.comeOnline()
 
 if __name__ == '__main__':
-    Thread(target = ircwindow.start).start()
-    Thread(target = ircserver.comeOnline).start()
-
+    win = Thread(target = ircwindow.start)
+    server = Thread(target = ircserver.comeOnline)
+    win.start()
+    server.start()
+    win.join()
+    server.join()
