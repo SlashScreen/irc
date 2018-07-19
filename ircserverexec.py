@@ -9,6 +9,9 @@ def execute(func):
     else:
         ircserver.comeOnline()
 
+#ircserver.comeOnline()
+
 if __name__ == '__main__':
     Thread(target = ircwindow.start).start()
     Thread(target = ircserver.comeOnline).start()
+
