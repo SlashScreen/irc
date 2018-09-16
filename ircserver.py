@@ -7,11 +7,13 @@ import json
 import logging
 import websockets
 import ircwindow
+import ast
 
 logging.basicConfig()
 
 messages = []
 newlist = [1,2,3]
+locdict = {}
 
 USERS = set()
 
@@ -49,14 +51,20 @@ def getPacketData(packet):
     return out
 
 async def counter(websocket, path):
-    # register(websocket) sends user_event() to websocket
- #   await register(websocket)
     msg = await websocket.recv()
     packet = getPacketData(msg)
     print("{u} said: {m}".format(u = packet["username"], m = packet["message"]))
     messages.append(msg)
-    #await websocket.send('\n'+msg)
- #   await unregister(websocket)
+
+async def dictupdate(websocket,path):
+    msg = await websocket.recv()
+    raw = ast.literal_eval(msg)
+    global locdict
+    if not raw == locdict:
+        locdict[raw["name"]] = raw
+        print(str(locdict))
+        await websocket.send(str(locdict))
+        messages.append(msg)
 
 def getMsgs():
     return messages
@@ -65,10 +73,11 @@ def comeOnline():
     print ("Coming Online...")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    start_server = websockets.serve(counter, 'localhost', 6789)
+    start_server = websockets.serve(dictupdate, 'localhost', 6789)
     loop.run_until_complete(start_server)
     print ("Online!")
     loop.run_forever()
 
 if __name__ == '__main__':
+ #   locdict = {}
     comeOnline()
