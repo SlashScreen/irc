@@ -62,6 +62,9 @@ async def dictupdate(websocket,path):
     global world
     if not raw == world:
         world["players"][raw["name"]] = raw
+        f = open("./data/testworld.txt","w")
+        f.write(str(world))
+        f.close()
         print(str(world))
         await websocket.send(str(world))
         messages.append(msg)
@@ -71,6 +74,14 @@ def getMsgs():
 
 def comeOnline():
     print ("Coming Online...")
+    #try:
+    f = open("./data/testworld.txt","r+")
+    worldread = f.read()
+    print(worldread)
+    world = ast.literal_eval(worldread)
+    f.close()
+    #except:
+    #print ("cannot read world file.")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     start_server = websockets.serve(dictupdate, 'localhost', 6789)

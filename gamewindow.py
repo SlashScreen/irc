@@ -15,9 +15,9 @@ playerdict["pos"] = {}
 playerdict["pos"]["x"] = 0
 playerdict["pos"]["y"] = 0
 clock = pygame.time.Clock()
-movement = {pygame.K_w:    ( 0, -1),
-            pygame.K_s:  ( 0,  1),
-            pygame.K_a:  (-1,  0), 
+movement = {pygame.K_w: ( 0, -1),
+            pygame.K_s: ( 0,  1),
+            pygame.K_a: (-1,  0), 
             pygame.K_d: ( 1,  0)}
 
 def runInParallel(*fns):
