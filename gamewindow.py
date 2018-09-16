@@ -29,6 +29,7 @@ def runInParallel(*fns):
 ###MAIN LOOP###
 async def mainLoop():
     global playerdict
+    myfont = pygame.font.SysFont("monospace", 15)
     done = False
     while not done:
             for event in pygame.event.get():
@@ -55,6 +56,8 @@ async def mainLoop():
                     #print (player)
                     if not name == playerdict["name"]:
                         pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], 60, 60))
+                        label = myfont.render(name, 1, (255,255,255))
+                        screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
             clock.tick(60)
 
 ###INITIALIZE###
