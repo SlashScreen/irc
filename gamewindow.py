@@ -1,5 +1,4 @@
 import pygame
-import ircclient as client
 from multiprocessing import Process
 import asyncio
 import websockets
@@ -53,8 +52,8 @@ async def mainLoop():
                 dat = await websocket.recv()
                 raw =  ast.literal_eval(dat)
                 #print(raw)
-                for name,player in raw.items():
-                    #print (player)
+                for name,player in raw["players"].items():
+                    #print ("player",name,player)
                     if not name == playerdict["name"]:
                         pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], 60, 60))
                         label = myfont.render(name, 1, (255,255,255))

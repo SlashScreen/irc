@@ -6,7 +6,6 @@ import asyncio
 import json
 import logging
 import websockets
-import ircwindow
 import ast
 
 logging.basicConfig()
@@ -14,6 +13,7 @@ logging.basicConfig()
 messages = []
 newlist = [1,2,3]
 world = {}
+world['players'] = {}
 
 USERS = set()
 
