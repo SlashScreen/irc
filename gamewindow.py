@@ -29,6 +29,7 @@ def runInParallel(*fns):
 ###MAIN LOOP###
 async def mainLoop():
     global playerdict
+    tempdict = playerdict.copy()
     myfont = pygame.font.SysFont("monospace", 15)
     done = False
     while not done:

@@ -13,7 +13,7 @@ logging.basicConfig()
 
 messages = []
 newlist = [1,2,3]
-locdict = {}
+world = {}
 
 USERS = set()
 
@@ -59,11 +59,11 @@ async def counter(websocket, path):
 async def dictupdate(websocket,path):
     msg = await websocket.recv()
     raw = ast.literal_eval(msg)
-    global locdict
-    if not raw == locdict:
-        locdict[raw["name"]] = raw
-        print(str(locdict))
-        await websocket.send(str(locdict))
+    global world
+    if not raw == world:
+        world["players"][raw["name"]] = raw
+        print(str(world))
+        await websocket.send(str(world))
         messages.append(msg)
 
 def getMsgs():
