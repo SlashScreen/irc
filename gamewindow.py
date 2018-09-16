@@ -15,6 +15,10 @@ playerdict["pos"] = {}
 playerdict["pos"]["x"] = 0
 playerdict["pos"]["y"] = 0
 clock = pygame.time.Clock()
+movement = {pygame.K_w:    ( 0, -1),
+            pygame.K_s:  ( 0,  1),
+            pygame.K_a:  (-1,  0), 
+            pygame.K_d: ( 1,  0)}
 
 def runInParallel(*fns):
   proc = []
@@ -28,22 +32,23 @@ def runInParallel(*fns):
 ###MAIN LOOP###
 async def mainLoop():
     global playerdict
+    global movement
+    direction = (0,0)
     tempdict = playerdict.copy()
     myfont = pygame.font.SysFont("monospace", 15)
     done = False
     while not done:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                        done = True
-                key = pygame.key.get_pressed()
-                if key[pygame.K_d]:
-                    playerdict["pos"]["x"] += 1
-                if key[pygame.K_a]:
-                    playerdict["pos"]["x"] -= 1
-                if key[pygame.K_w]:
-                    playerdict["pos"]["y"] -= 1
-                if key[pygame.K_s]:
-                    playerdict["pos"]["y"] += 1
+                    done = True
+                if event.type == pygame.KEYDOWN:
+                    #direction = (0,0)
+                    direction = movement.get(event.key,direction)
+                if event.type == pygame.KEYUP:
+                    direction = (0,0)
+                
+            playerdict["pos"]["x"] = playerdict["pos"]["x"] + direction[0]
+            playerdict["pos"]["y"] = playerdict["pos"]["y"] + direction[1]
             pygame.display.flip()
             screen.fill((255, 255, 255))
             pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(playerdict["pos"]["x"], playerdict["pos"]["y"], 60, 60))
