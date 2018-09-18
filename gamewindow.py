@@ -33,25 +33,38 @@ def runInParallel(*fns):
 async def mainLoop():
     global playerdict
     global movement
-    direction = (0,0)
+    speed = 5
+    square = 60
+    direction = [0,0]
     tempdict = playerdict.copy()
     myfont = pygame.font.SysFont("monospace", 15)
     done = False
     while not done:
+            w, h = pygame.display.get_surface().get_size()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.KEYDOWN:
                     #direction = (0,0)
-                    direction = movement.get(event.key,direction)
+                  if event.key == pygame.K_w:
+                    direction[1] = -1
+                  if event.key == pygame.K_s:
+                    direction[1] = 1
+                  if event.key == pygame.K_a:
+                    direction[0] = -1
+                  if event.key == pygame.K_d:
+                    direction[0] = 1
+                    #direction = movement.get(event.key,direction)
                 if event.type == pygame.KEYUP:
-                    direction = (0,0)
+                  if event.key == pygame.K_w or event.key == pygame.K_s:
+                    direction[1] = 0
+                  if event.key == pygame.K_a or event.key == pygame.K_d:
+                    direction[0] = 0
                 
-            playerdict["pos"]["x"] = playerdict["pos"]["x"] + direction[0]
-            playerdict["pos"]["y"] = playerdict["pos"]["y"] + direction[1]
+            playerdict["pos"]["x"] = playerdict["pos"]["x"] + (direction[0]*speed)
+            playerdict["pos"]["y"] = playerdict["pos"]["y"] + (direction[1]*speed)
             pygame.display.flip()
             screen.fill((255, 255, 255))
-            pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(playerdict["pos"]["x"], playerdict["pos"]["y"], 60, 60))
             async with websockets.connect('ws://localhost:6789') as websocket:
                 await websocket.send(str(playerdict))
                 dat = await websocket.recv()
@@ -60,9 +73,11 @@ async def mainLoop():
                 for name,player in raw["players"].items():
                     #print ("player",name,player)
                     if not name == playerdict["name"]:
-                        pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], 60, 60))
-                        label = myfont.render(name, 1, (255,255,255))
-                        screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
+                        pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"]-playerdict["pos"]["x"]-square/2, player["pos"]["y"]-playerdict["pos"]["y"]-square/2, square, square))
+                        label = myfont.render(name, 1, (0,0,0))
+                        screen.blit(label, (player["pos"]["x"]-playerdict["pos"]["x"]-square/2, player["pos"]["y"]-playerdict["pos"]["y"]-square/2))
+            #print(w,h)
+            pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(w/2-square/2, h/2-square/2, square, square)) #player
             clock.tick(60)
 
 ###INITIALIZE###
