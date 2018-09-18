@@ -3,7 +3,7 @@ from multiprocessing import Process
 import asyncio
 import websockets
 import ast
-
+import json
 
 pygame.init()
 screen = pygame.display.set_mode((400, 300))
@@ -19,6 +19,9 @@ movement = {pygame.K_w: ( 0, -1),
             pygame.K_s: ( 0,  1),
             pygame.K_a: (-1,  0), 
             pygame.K_d: ( 1,  0)}
+with open('config.json') as f:
+    data = json.load(f)
+
 
 def runInParallel(*fns):
   proc = []
@@ -33,6 +36,7 @@ def runInParallel(*fns):
 async def mainLoop():
     global playerdict
     global movement
+    global data
     speed = 5
     square = 60
     direction = [0,0]
@@ -65,7 +69,7 @@ async def mainLoop():
             playerdict["pos"]["y"] = playerdict["pos"]["y"] + (direction[1]*speed)
             pygame.display.flip()
             screen.fill((255, 255, 255))
-            async with websockets.connect('ws://localhost:6789') as websocket:
+            async with websockets.connect('ws://'+data["server"]+':12250') as websocket:
                 await websocket.send(str(playerdict))
                 dat = await websocket.recv()
                 raw =  ast.literal_eval(dat)
