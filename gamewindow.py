@@ -77,11 +77,11 @@ async def mainLoop():
                 for name,player in raw["players"].items():
                     #print ("player",name,player)
                     if not name == playerdict["name"]:
-                        pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"]-playerdict["pos"]["x"]-square/2, player["pos"]["y"]-playerdict["pos"]["y"]-square/2, square, square))
+                        pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], square, square))
                         label = myfont.render(name, 1, (0,0,0))
-                        screen.blit(label, (player["pos"]["x"]-playerdict["pos"]["x"]-square/2, player["pos"]["y"]-playerdict["pos"]["y"]-square/2))
+                        screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
             #print(w,h)
-            pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(w/2-square/2, h/2-square/2, square, square)) #player
+            pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(playerdict["pos"]["x"],playerdict["pos"]["y"], square, square)) #player
             clock.tick(60)
 
 ###INITIALIZE###
