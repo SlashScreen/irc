@@ -20,7 +20,7 @@ movement = {pygame.K_w: ( 0, -1),
             pygame.K_a: (-1,  0), 
             pygame.K_d: ( 1,  0)}
 with open('config.json') as f:
-    data = json.load(f)
+    config = json.load(f)
 
 
 def runInParallel(*fns):
@@ -69,21 +69,19 @@ async def mainLoop():
             playerdict["pos"]["y"] = playerdict["pos"]["y"] + (direction[1]*speed)
             pygame.display.flip()
             screen.fill((255, 255, 255))
-            async with websockets.connect('ws://'+data["server"]+':12250') as websocket:
+            async with websockets.connect('ws://'+config["server"]+':12250') as websocket:
                 await websocket.send(str(playerdict))
                 dat = await websocket.recv()
                 raw =  ast.literal_eval(dat)
-                #print(raw)
                 for name,player in raw["players"].items():
-                    #print ("player",name,player)
                     if not name == playerdict["name"]:
                         pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], square, square))
                         label = myfont.render(name, 1, (0,0,0))
                         screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
+                
             #print(w,h)
             pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(playerdict["pos"]["x"],playerdict["pos"]["y"], square, square)) #player
             clock.tick(60)
 
 ###INITIALIZE###
-#runInParallel(client.online,mainLoop)
 asyncio.get_event_loop().run_until_complete(mainLoop())

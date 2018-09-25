@@ -14,8 +14,10 @@ messages = []
 newlist = [1,2,3]
 world = {}
 world['players'] = {}
+world['world'] = {}
+world['world']['items'] = {}
 with open('config.json') as f:
-    data = json.load(f)
+    config = json.load(f)
 
 async def dictupdate(websocket,path):
     msg = await websocket.recv()
@@ -41,15 +43,12 @@ def comeOnline():
     print(worldread)
     world = ast.literal_eval(worldread)
     f.close()
-    #except:
-    #print ("cannot read world file.")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    start_server = websockets.serve(dictupdate, data["server"], 12250)
+    start_server = websockets.serve(dictupdate, config["server"], 12250)
     loop.run_until_complete(start_server)
     print ("Online!")
     loop.run_forever()
 
 if __name__ == '__main__':
- #   locdict = {}
     comeOnline()
