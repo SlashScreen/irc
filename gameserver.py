@@ -22,10 +22,10 @@ async def dictupdate(websocket,path):
     global world
     msg = await websocket.recv()
     world = eventhandler.handleEvent(msg,world)
-    f = open("./data/testworld.txt","w")
-    f.write(str(world))
+    f = open("./data/"+config["world"]+".json","w")
+    json.dump(world,f)
     f.close()
-    print(str(world))
+    
     await websocket.send(eventhandler.constructEvent("w-update",world))
     messages.append(msg)
 
@@ -34,15 +34,16 @@ def getMsgs():
 
 def comeOnline():
     print ("Coming Online...")
-    #try:
-    f = open("./data/testworld.txt","r+")
-    worldread = f.read()
-    print(worldread)
-    world = ast.literal_eval(worldread)
-    f.close()
+    try:
+        f = open("./data/"+config["world"]+".json","r+")
+        world = json.load(f)
+        f.close()
+        print(str(world))
+    except:
+        print("json world file corrupt. Unable to load.")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    start_server = websockets.serve(dictupdate, config["server"], 12250)
+    start_server = websockets.serve(dictupdate, config["server"], config["port"])
     loop.run_until_complete(start_server)
     print ("Online!")
     loop.run_forever()

@@ -49,6 +49,7 @@ async def mainLoop():
     done = False
     while not done:
             w, h = pygame.display.get_surface().get_size()
+            #control
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
@@ -62,30 +63,31 @@ async def mainLoop():
                     direction[0] = -1
                   if event.key == pygame.K_d:
                     direction[0] = 1
-                    #direction = movement.get(event.key,direction)
                 if event.type == pygame.KEYUP:
                   if event.key == pygame.K_w or event.key == pygame.K_s:
                     direction[1] = 0
                   if event.key == pygame.K_a or event.key == pygame.K_d:
                     direction[0] = 0
-                
-            playerdict["pos"]["x"] = playerdict["pos"]["x"] + (direction[0]*speed)
+            #move player
+            playerdict["pos"]["x"] = playerdict["pos"]["x"] + (direction[0]*speed) 
             playerdict["pos"]["y"] = playerdict["pos"]["y"] + (direction[1]*speed)
+            #clear cache or whatever
             pygame.display.flip()
             screen.fill((255, 255, 255))
-            async with websockets.connect('ws://'+config["server"]+':12250') as websocket:
+            #get world
+            async with websockets.connect('ws://'+config["server"]+':'+str(config["port"])) as websocket:
                 event = eventhandler.constructEvent("p-update",playerdict)
                 await websocket.send(event)
                 dat = await websocket.recv()
-                raw =  eventhandler.handleEvent(dat,worlddict)
+                worlddict =  eventhandler.handleEvent(dat,worlddict)
                 #print(raw)
-                for name,player in raw["world"]["players"].items():
-                    if not name == playerdict["name"]:
-                        pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], square, square))
-                        label = myfont.render(name, 1, (0,0,0))
-                        screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
-                
-            #print(w,h)
+            #draw multiplayer
+            for name,player in worlddict["world"]["players"].items():
+                if not name == playerdict["name"]:
+                    pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], square, square))
+                    label = myfont.render(name, 1, (0,0,0))
+                    screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
+            #draw client player
             pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(playerdict["pos"]["x"],playerdict["pos"]["y"], square, square)) #player
             clock.tick(60)
 
