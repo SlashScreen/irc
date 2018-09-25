@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-# WS server example that synchronizes state across clients
+#gameserver.py
 
 import asyncio
 import json

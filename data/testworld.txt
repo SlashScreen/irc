@@ -1,1 +1,1 @@
-{'players': {'Wheeeeee': {'name': 'Wheeeeee', 'pos': {'x': 50, 'y': 115}}, 'booboo': {'name': 'booboo', 'pos': {'x': 125, 'y': 135}}, 'Hapapapap': {'name': 'Hapapapap', 'pos': {'x': 190, 'y': 125}}}}
+{'players': {'elsetree': {'name': 'elsetree', 'pos': {'x': 150, 'y': 115}}}, 'world': {'items': {}}}
