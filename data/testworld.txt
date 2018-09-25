@@ -1,1 +1,1 @@
-{'players': {'elsetree': {'name': 'elsetree', 'pos': {'x': 150, 'y': 115}}}, 'world': {'items': {}}}
+{'players': {'damn you': {'name': 'damn you', 'pos': {'x': 0, 'y': 0}}, 'grr': {'name': 'grr', 'pos': {'x': 0, 'y': 0}}, 'help': {'name': 'help', 'pos': {'x': 0, 'y': 0}}, 'mmmm': {'name': 'mmmm', 'pos': {'x': 90, 'y': 40}}, 'okay': {'name': 'okay', 'pos': {'x': 75, 'y': 165}}, 'mmmmm': {'name': 'mmmmm', 'pos': {'x': 295, 'y': 30}}}, 'world': {'items': {}}}

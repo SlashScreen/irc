@@ -6,6 +6,7 @@ import asyncio
 import websockets
 import ast
 import json
+import eventhandler
 
 pygame.init()
 screen = pygame.display.set_mode((400, 300))
@@ -39,6 +40,7 @@ async def mainLoop():
     global playerdict
     global movement
     global data
+    global worlddict
     speed = 5
     square = 60
     direction = [0,0]
@@ -72,10 +74,12 @@ async def mainLoop():
             pygame.display.flip()
             screen.fill((255, 255, 255))
             async with websockets.connect('ws://'+config["server"]+':12250') as websocket:
-                await websocket.send(str(playerdict))
+                event = eventhandler.constructEvent("p-update",playerdict)
+                await websocket.send(event)
                 dat = await websocket.recv()
-                raw =  ast.literal_eval(dat)
-                for name,player in raw["players"].items():
+                raw =  eventhandler.handleEvent(dat,worlddict)
+                #print(raw)
+                for name,player in raw["world"]["players"].items():
                     if not name == playerdict["name"]:
                         pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], square, square))
                         label = myfont.render(name, 1, (0,0,0))

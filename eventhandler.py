@@ -1,4 +1,12 @@
 #eventhandler.py
+import ast
+
+def constructEvent(name,package):
+    event = {}
+    event["name"] = name
+    event["package"] = package
+    return str(event)
+
 def example():
     print ("example event")
 
@@ -11,10 +19,12 @@ def playerUpdate(player,world):
     return world
 
 def handleEvent(event,world):
+    ev = ast.literal_eval(event)
     res = None
-    if event["name"] = "test":
+    if ev["name"] == "test":
         example()
-    if event["name"] = "w-update":
-        worldUpdate(world,event["package"])
-    if event["name"] = "p-update":
-        playerUpdate(event["package"],world)
+    if ev["name"] == "w-update":
+        res = worldUpdate(world,ev["package"])
+    if ev["name"] == "p-update":
+        res = playerUpdate(ev["package"],world)
+    return res

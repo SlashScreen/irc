@@ -5,6 +5,7 @@ import json
 import logging
 import websockets
 import ast
+import eventhandler
 
 logging.basicConfig()
 
@@ -18,17 +19,15 @@ with open('config.json') as f:
     config = json.load(f)
 
 async def dictupdate(websocket,path):
-    msg = await websocket.recv()
-    raw = ast.literal_eval(msg)
     global world
-    if not raw == world:
-        world["players"][raw["name"]] = raw
-        f = open("./data/testworld.txt","w")
-        f.write(str(world))
-        f.close()
-        print(str(world))
-        await websocket.send(str(world))
-        messages.append(msg)
+    msg = await websocket.recv()
+    world = eventhandler.handleEvent(msg,world)
+    f = open("./data/testworld.txt","w")
+    f.write(str(world))
+    f.close()
+    print(str(world))
+    await websocket.send(eventhandler.constructEvent("w-update",world))
+    messages.append(msg)
 
 def getMsgs():
     return messages
