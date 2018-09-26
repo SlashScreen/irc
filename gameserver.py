@@ -15,21 +15,30 @@ world = {}
 world['players'] = {}
 world['world'] = {}
 world['world']['items'] = {}
+clients = set()
 with open('config.json') as f:
     config = json.load(f)
 
-async def initialize(websocket,path):
+async def initialize(websocket):
     global world
-    websocket.send(eventhandler.constructEvent("init_world",world))
+    print("sent init to "+str(websocket))
+    
 
 async def gameServer(websocket,path):
     global world
+    change = {}
+    if not websocket in clients:
+        websocket.send(eventhandler.constructEvent("init_world",world))
+        #print("new client connected: {c}".format(c = str(websocket)))
+        clients.add(websocket)
+    tempworld = world.copy()
     msg = await websocket.recv()
-    world = eventhandler.handleEvent(msg,world)
+    change.update(eventhandler.handleEvent(msg,world))
+    world.update(change)
     f = open("./data/"+config["world"]+".json","w")
     json.dump(world,f)
     f.close()
-    await websocket.send(eventhandler.constructEvent("w-update",world))
+    await websocket.send(eventhandler.constructEvent("w-update",change))
     messages.append(msg)
 
 def getMsgs():
@@ -46,7 +55,7 @@ def comeOnline():
         print("json world file corrupt. Unable to load.")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    start_server = websockets.serve(initialize, config["server"], config["port"])
+    #start_server = websockets.serve(initialize, config["server"], config["port"])
     server = websockets.serve(gameServer, config["server"], config["port"])
     loop.run_until_complete(server)
     print ("Online!")

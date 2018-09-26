@@ -10,11 +10,11 @@ import eventhandler
 import movementhandler
 
 pygame.init()
-screen = pygame.display.set_mode((400, 300))
 done = False
 worlddict = {}
 playerdict = {}
 playerdict["name"] = input("Player Name? ")
+screen = pygame.display.set_mode((400, 300))
 playerdict["pos"] = {}
 playerdict["pos"]["x"] = 0
 playerdict["pos"]["y"] = 0
@@ -39,6 +39,11 @@ async def mainLoop():
     myfont = pygame.font.SysFont("monospace", 15)
     done = False
     while not done:
+            async with websockets.connect('ws://'+config["server"]+':'+str(config["port"])) as websocket:
+              event = eventhandler.constructEvent("p-update",playerdict)
+              await websocket.send(event)
+              dat = await websocket.recv()
+              worlddict.update(eventhandler.handleEvent(dat,worlddict))
             w, h = pygame.display.get_surface().get_size()
             #control
             direction = movementhandler.calcInputEvent(pygame.event.get(),direction)
@@ -52,16 +57,13 @@ async def mainLoop():
             pygame.display.flip()
             screen.fill((255, 255, 255))
             #get world
-            async with websockets.connect('ws://'+config["server"]+':'+str(config["port"])) as websocket:
-                event = eventhandler.constructEvent("p-update",playerdict)
-                await websocket.send(event)
-                dat = await websocket.recv()
-                worlddict.update(eventhandler.handleEvent(dat,worlddict))
-            for name,player in worlddict["players"].items():
-                if not name == playerdict["name"]:
-                    pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], square, square))
-                    label = myfont.render(name, 1, (0,0,0))
-                    screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
+
+            if  not worlddict == {}:
+              for name,player in worlddict["players"].items():
+                  if not name == playerdict["name"]:
+                      pygame.draw.rect(screen, (255, 128, 0), pygame.Rect(player["pos"]["x"], player["pos"]["y"], square, square))
+                      label = myfont.render(name, 1, (0,0,0))
+                      screen.blit(label, (player["pos"]["x"], player["pos"]["y"]))
             #draw client player
             pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(playerdict["pos"]["x"],playerdict["pos"]["y"], square, square)) #player
             clock.tick(60)
