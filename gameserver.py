@@ -2,12 +2,9 @@
 
 import asyncio
 import json
-import logging
 import websockets
-import ast
+##Homegrown
 import eventhandler
-
-logging.basicConfig()
 
 messages = []
 newlist = [1,2,3]
@@ -38,6 +35,7 @@ async def gameServer(websocket,path):
     f = open("./data/"+config["world"]+".json","w")
     json.dump(world,f)
     f.close()
+    print(change)
     await websocket.send(eventhandler.constructEvent("w-update",change))
     messages.append(msg)
 

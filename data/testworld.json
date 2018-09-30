@@ -1,1 +1,1 @@
-{"players": {"?": {"name": "?", "pos": {"x": 40, "y": 180}}, "!": {"name": "!", "pos": {"x": 185, "y": 100}}, ">": {"name": ">", "pos": {"x": 150, "y": 10}}}, "world": {"items": {}}}
+{"players": {"yay": {"name": "yay", "pos": {"x": 180, "y": 160}}, "whee": {"name": "whee", "pos": {"x": 65, "y": 105}}}, "world": {"items": {}}}

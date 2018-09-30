@@ -1,11 +1,10 @@
 #gamewindow.py
 
 import pygame
-from multiprocessing import Process
 import asyncio
 import websockets
-import ast
 import json
+##Homegrown
 import eventhandler
 import movementhandler
 
@@ -21,7 +20,6 @@ playerdict["pos"]["y"] = 0
 clock = pygame.time.Clock()
 with open('config.json') as f:
     config = json.load(f)
-
 
 def updateSelf(newWorld):
   print("do this later")
